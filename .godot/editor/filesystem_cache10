@@ -1,5 +1,6 @@
 ea4bc82a6ad023ab7ee23ee620429895
-::res://::1751725448
+::res://::1751743959
+::res://addons/::1751743948
 ::res://assets/::1751652181
 ::res://assets/fonts/::1751652867
 Creamy Soup.otf::FontFile/FontFile::8987023951948184954::1751652867::1751652867::1::::<><><>0<>0<>d5b07f9012692514c1ad2fc2d49202bd<>res://.godot/imported/Creamy Soup.otf-345ad310da5efe410915d46c04736da1.fontdata::
@@ -7,11 +8,13 @@ Creamy Soup.otf::FontFile/FontFile::8987023951948184954::1751652867::1751652867:
 banana.png::CompressedTexture2D/CompressedTexture2D::6372780234061370138::1751661335::1751661337::1::::<><><>0<>0<>a57d4098a90395ba9b9dffd9079f7f07<>res://.godot/imported/banana.png-f5bca1bf597df3a889abe8e6b82e7f95.ctex::
 monkey.png::CompressedTexture2D/CompressedTexture2D::137562160479868111::1751652449::1751652452::1::::<><><>0<>0<>cf93ee6baae68466d6932533951611dd<>res://.godot/imported/monkey.png-1859ddf46c9e23b06ae1a9c61990be59.ctex::
 sunburst.png::CompressedTexture2D/CompressedTexture2D::6339435067075550924::1751661499::1751661500::1::::<><><>0<>0<>75aa3ec695b61ad2151484359bdc3768<>res://.godot/imported/sunburst.png-2bfc6a13a9e593a91588b0cdd0a9c99b.ctex::
-::res://scenes/::1751725418
-game.tscn::PackedScene::3637174905954839508::1751725418::0::1::::<><><>0<>0<><>::uid://cv8wruy0hoqj7::::res://scripts/game.gd<>uid://5hff8uaq88gb::::res://scripts/animations.gd<>uid://d1bm8batuor6i::::res://assets/fonts/Creamy Soup.otf<>uid://cwk4tmf2e75do::::res://assets/img/sunburst.png<>uid://b4yr6perfwqbp::::res://scripts/statistics.gd<>uid://wcpj5ydqtmk::::res://scripts/destroy_1s.gd<>uid://cw2a023xa6hmo::::res://assets/img/banana.png
-::res://scripts/::1751725371
-animations.gd::GDScript/GDScript::2120430231542106585::1751665668::0::1::::<>MarginContainer<><>0<>0<><>::
-destroy_1s.gd::GDScript/GDScript::45565051632815646::1751663318::0::1::::<>Label<><>0<>0<><>::
-game.gd::GDScript::6316298770694218130::1751725371::0::1::::<>Control<><>0<>0<><>::
-statistics.gd::GDScript::4472530558590993425::1751724916::0::1::::<>VBoxContainer<><>0<>0<><>::
-upgrades.gd::GDScript::6695442889334273912::1751721858::0::1::::<>Node<><>0<>0<><>::
+::res://scenes/::1751743685
+game.tscn::PackedScene::3637174905954839508::1751743685::0::1::::<><><>0<>0<><>::uid://cv8wruy0hoqj7::::res://scripts/game.gd<>uid://5hff8uaq88gb::::res://scripts/animations.gd<>uid://d1bm8batuor6i::::res://assets/fonts/Creamy Soup.otf<>uid://cwk4tmf2e75do::::res://assets/img/sunburst.png<>uid://b4yr6perfwqbp::::res://scripts/statistics.gd<>uid://wcpj5ydqtmk::::res://scripts/destroy_1s.gd<>uid://cw2a023xa6hmo::::res://assets/img/banana.png<>uid://bcoe3nsesm102::::res://scripts/upgrades.gd
+::res://scripts/::1751743685
+animations.gd::GDScript/GDScript::2120430231542106585::1751725802::0::1::::<>MarginContainer<><>0<>0<><>::
+destroy_1s.gd::GDScript/GDScript::45565051632815646::1751725806::0::1::::<>Label<><>0<>0<><>::
+game.gd::GDScript::6316298770694218130::1751743685::0::1::::<>Control<><>0<>0<><>::
+globals.gd::GDScript/GDScript::8742204526845173578::1751742489::0::1::::<>Node<><>0<>0<><>::
+persistence.gd::GDScript/GDScript::2174498140589715875::1751742932::0::1::::<>Node<><>0<>0<><>::
+statistics.gd::GDScript/GDScript::4472530558590993425::1751728552::0::1::::<>VBoxContainer<><>0<>0<><>::
+upgrades.gd::GDScript::2555993240542735317::1751743614::0::1::::<>Node<><>0<>0<><>::

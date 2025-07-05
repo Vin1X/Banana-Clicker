@@ -1,156 +1,79 @@
 extends Control
 
-const save_path = "user://userdata.save"
+# Signals are no longer emitted directly from here for stats,
+# but from Globals. You might keep banana_clicked for visual effects.
+signal banana_clicked(amount: float) # Only this signal might still be relevant here
 
-var bananas = 0
-var amount_per_click = 1
-var bananas_per_second = 1
+# @onready vars for UI elements
+@onready var upgrades_manager: UpgradesManager = $RightPanel/Panel/UpgradeList # Reference to the UpgradesManager script
+@onready var banana_per_second_timer: Timer = $BananaPerSecondTimer # Assuming it's a direct child of Game
+@onready var bananas_per_second: Label = $LeftPanel/MarginContainer/Statistics/HBoxContainer/BananasPerSecond
+@onready var bananas_label: Label = $LeftPanel/MarginContainer/Statistics/BananasLabel
 
-@onready var upgrade_list: BoxContainer = $RightPanel/Panel/UpgradeList
-@onready var template_upgrade: Button = $RightPanel/Panel/UpgradeList/TemplateUpgrade
-
-signal bananas_changed
-signal bananas_per_second_changed
-signal banana_clicked
-
-var upgrades = [
-	{
-		"id": "click_power_up",
-		"name": "Gathering Training",
-		"description": "Each click gives +1 more banana",
-		"cost": 10,
-		"applies_to": "click",
-		"effect_type": "additive",
-		"effect_value": 1.0,
-		"purchased": false,
-	},
-	{
-		"id": "monkey",
-		"name": "Monkey",
-		"description": "Each Monkey produces 0.2 bananas",
-		"cost": 50,
-		"applies_to": "passive",
-		"effect_type": "additive",
-		"effect_value": .2,
-		"purchased": false,
-		"purchased_amount": 0
-	},
-	{
-		"id": "plantage",
-		"name": "Banana Plantage",
-		"description": "Each plantage produces 0.3 bananas",
-		"cost": 150,
-		"applies_to": "passive",
-		"effect_type": "additive",
-		"effect_value": .3,
-		"purchased": false,
-		"purchased_amount": 0
-	}
-]
 
 func _ready()->void:
-	# Load data
-	load_data()
+	# 1. Load data from persistence
+	# Persistence.load_data() will load data into Globals directly.
+	Persistence.load_data()
 	
-	# Load labels
-	emit_signal("bananas_changed", bananas)
-	emit_signal("bananas_per_second_changed", bananas_per_second)
+	# 2. Initialize UI labels with current global values
+	# We don't emit local signals here anymore for stats; UI connects to Globals.
+	on_global_bananas_changed(Globals.bananas) # Manually call to set initial text
+	on_global_bananas_per_second_changed(Globals.bananas_per_second) # Manually call to set initial text
 	
-	# Load upgrades
-	call_deferred("load_upgrades")
-
-func save_data():
-	var data = {
-		"bananas": bananas,
-		"amount_per_click": amount_per_click,
-		"bananas_per_second": bananas_per_second,
-		"upgrades": upgrades,
-	}
-	var file = FileAccess.open(save_path, FileAccess.WRITE)
-	file.store_var(data)
-	file.close()
-
-func load_data():
-	if FileAccess.file_exists(save_path):
-		var file = FileAccess.open(save_path, FileAccess.READ)
-		var data = file.get_var()
-		file.close()
-		if typeof(data) == TYPE_DICTIONARY:
-			bananas = data.get("bananas",0)
-			amount_per_click = data.get("amount_per_click",0)
-			bananas_per_second = data.get("bananas_per_second",0)
-			# Load the upgrades array
-			var loaded_upgrades = data.get("upgrades", [])
-			# Merge loaded upgrades with default upgrades to handle new upgrades
-			for i in range(upgrades.size()):
-				for loaded_upgrade in loaded_upgrades:
-					if upgrades[i]["id"] == loaded_upgrade["id"]:
-						upgrades[i]["purchased"] = loaded_upgrade["purchased"]
-						break
+	# 3. Connect UI update functions to Globals signals
+	Globals.bananas_changed.connect(on_global_bananas_changed)
+	Globals.bananas_per_second_changed.connect(on_global_bananas_per_second_changed)
+	Globals.amount_per_click_changed.connect(on_global_amount_per_click_changed) # If you have a label for this
+	
+	# 4. Connect to signals from the UpgradesManager
+	# The upgrades_manager will tell us when a purchase happens, so we can save.
+	upgrades_manager.upgrade_purchased_successful.connect(on_upgrade_purchased_successful)
+	
+	# 5. Load/refresh upgrade buttons in the UI
+	# The UpgradesManager handles its own deferred loading,
+	# but ensure it loads with the *correct* data (from Persistence).
+	# Assuming set_upgrades_data in UpgradesManager will call load_upgrade_buttons
+	if Globals.upgrades.is_empty(): # Check if manager has no upgrades yet (e.g., initial run)
+		# Pass its own default upgrades if no loaded data
+		upgrades_manager.set_upgrades_data(upgrades_manager.upgrades) 
 	else:
-		save_data()
+		# If Persistence loaded new upgrades data into UpgradesManager (through Globals/Persistence flow),
+		# then UpgradesManager should already have it and just needs to load its buttons.
+		upgrades_manager.load_upgrade_buttons() # Tell the manager to load its UI
 
-func load_upgrades():
-	for i in range(upgrades.size()):
-		var upgrade = upgrades[i]
-		var upgrade_item = template_upgrade.duplicate()
-		upgrade_item.visible = true
-		upgrade_item.text = upgrade["name"]
-		upgrade_item.tooltip_text = upgrade["description"]
-		upgrade_list.add_child(upgrade_item)
-
-		# Capture the index explicitly
-		var index := i
-		var button_ref: Button = upgrade_item
-
-		button_ref.pressed.connect(func():
-			var selected_upgrade = upgrades[index]
-
-			if selected_upgrade["purchased"]:
-				print("Already bought: " + selected_upgrade["name"] + " (ID: " + selected_upgrade["id"] + ")")
-				return
-
-			if bananas >= selected_upgrade["cost"]:
-				buy_upgrade(selected_upgrade)
-				if selected_upgrade["purchased"] == true and selected_upgrade["applies_to"] == "click":
-					selected_upgrade["purchased"] = true
-					button_ref.disabled = true
-			else:
-				print("Not enough bananas for: " + selected_upgrade["name"] + " (ID: " + selected_upgrade["id"] + "); Has: " + str(bananas) + "Needs: " + str(selected_upgrade["cost"]))
-		)
-
-func buy_upgrade(upgrade)->void:
-	bananas -= upgrade["cost"] # Deduct cost
-	print("Bought: " + upgrade["name"] + "(ID: " + upgrade["id"] + ") for " + str(upgrade["cost"]) + " bananas")
-	if upgrade["applies_to"] == "passive":
-		if upgrade["effect_type"] == "multiply":
-			bananas_per_second *= upgrade["effect_value"]
-		elif upgrade["effect_type"] == "additive":
-			bananas_per_second += upgrade["effect_value"]
-		else:
-			push_error("Upgrade type unknown: " + upgrade["effect_type"] + "...")
-	elif upgrade["applies_to"] == "click":
-		if upgrade["effect_type"] == "multiplier":
-			amount_per_click *= upgrade["effect_value"]
-		elif upgrade["effect_type"] == "additive":
-			amount_per_click += upgrade["effect_value"]
-		else:
-			push_error("Upgrade type unknown: " + upgrade["effect_type"] + "...")
+	# 6. Start the passive banana generation timer
+	if banana_per_second_timer:
+		banana_per_second_timer.start()
 	else:
-		push_error("Unkwon upgrade applies_to: " + upgrade["applies_to"] + "...")
-	
-	emit_signal("bananas_changed", bananas)
-	emit_signal("bananas_per_second_changed", bananas_per_second)
-	save_data()
+		push_error("BananaPerSecondTimer node not found or referenced incorrectly!")
 
 
+# --- Signal Handlers for UI Updates ---
+func on_global_bananas_changed(new_amount: float):
+	bananas_label.text = "Bananas: " + str(int(new_amount))
+
+func on_global_bananas_per_second_changed(new_amount: float):
+	bananas_per_second.text = "B/s: " + str(new_amount)
+
+func on_global_amount_per_click_changed(new_amount: float):
+	# You might have a label for this too, or just print for debugging
+	print("Click amount updated: " + str(new_amount))
+
+func on_upgrade_purchased_successful():
+	# When an upgrade is bought, refresh UI (via Globals signals) and save game
+	# Globals signals will already update labels automatically via their connections
+	Persistence.save_data()
+
+
+# --- Input and Timer Functions ---
 func _on_banana_button_down() -> void:
-	bananas += amount_per_click
-	emit_signal("bananas_changed", bananas)
-	emit_signal("banana_clicked", amount_per_click)
-	save_data()
-
+	Globals.bananas += Globals.amount_per_click
+	emit_signal("banana_clicked", Globals.amount_per_click) # For visual effects
+	# Persistence.save_data() # You might consider saving less often, e.g., only on timer or exit.
+	# If you save on timer, no need to save here.
 
 func _on_banana_per_second_timer_timeout() -> void:
-	bananas += bananas_per_second
-	emit_signal("bananas_changed", bananas)
+	Globals.bananas += Globals.bananas_per_second
+	# No need to emit_signal("bananas_changed") here, as Globals.bananas setter will do it.
+	Persistence.save_data() # Save regularly due to passive income

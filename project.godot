@@ -21,9 +21,12 @@ config/icon="uid://b7vvm03optdf"
 
 [autoload]
 
-Game="*res://scripts/game.gd"
+Globals="*res://scripts/globals.gd"
+Persistence="*res://scripts/persistence.gd"
 
 [rendering]
 
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
+anti_aliasing/quality/msaa_3d=1
+anti_aliasing/quality/screen_space_aa=1
