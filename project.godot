@@ -1,0 +1,29 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[application]
+
+config/name="Banana Clicker"
+config/description="A cookie clicker remake with bananas and monkeys as a theme
+"
+config/version="1.0.0"
+run/main_scene="uid://br240evtpc4q7"
+config/features=PackedStringArray("4.4", "Forward Plus")
+boot_splash/image="uid://b7vvm03optdf"
+config/icon="uid://b7vvm03optdf"
+
+[autoload]
+
+Game="*res://scripts/game.gd"
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"

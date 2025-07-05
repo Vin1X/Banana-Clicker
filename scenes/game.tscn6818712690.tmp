@@ -1,0 +1,235 @@
+[gd_scene load_steps=16 format=3 uid="uid://br240evtpc4q7"]
+
+[ext_resource type="Script" uid="uid://cv8wruy0hoqj7" path="res://scripts/game.gd" id="1_lnu2h"]
+[ext_resource type="Script" uid="uid://5hff8uaq88gb" path="res://scripts/animations.gd" id="2_iywne"]
+[ext_resource type="FontFile" uid="uid://d1bm8batuor6i" path="res://assets/fonts/Creamy Soup.otf" id="2_lnu2h"]
+[ext_resource type="Texture2D" uid="uid://cwk4tmf2e75do" path="res://assets/img/sunburst.png" id="2_p57ef"]
+[ext_resource type="Script" uid="uid://b4yr6perfwqbp" path="res://scripts/statistics.gd" id="3_lbhrr"]
+[ext_resource type="Script" uid="uid://wcpj5ydqtmk" path="res://scripts/destroy_1s.gd" id="3_u5sy4"]
+[ext_resource type="Texture2D" uid="uid://cw2a023xa6hmo" path="res://assets/img/banana.png" id="5_iywne"]
+[ext_resource type="Script" uid="uid://c2nk735m652ue" path="res://scripts/upgrades.gd" id="8_gee14"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lbhrr"]
+bg_color = Color(3.36915e-06, 0.662973, 0.829546, 1)
+
+[sub_resource type="Animation" id="Animation_u5sy4"]
+resource_name = "spin_background"
+length = 30.0
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Background:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 30),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, 6.28319]
+}
+
+[sub_resource type="Animation" id="Animation_gee14"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Background:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_0tnpc"]
+_data = {
+&"RESET": SubResource("Animation_gee14"),
+&"spin_background": SubResource("Animation_u5sy4")
+}
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_iywne"]
+bg_color = Color(0, 0.350946, 0.726193, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p57ef"]
+content_margin_left = 20.0
+content_margin_top = 5.0
+content_margin_right = 20.0
+content_margin_bottom = 5.0
+bg_color = Color(0.357522, 0.588551, 1, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_u5sy4"]
+content_margin_top = 10.0
+
+[node name="Game" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_lnu2h")
+
+[node name="Indicators" type="Control" parent="."]
+top_level = true
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Template" type="Label" parent="Indicators"]
+visible = false
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+theme_override_constants/outline_size = 5
+theme_override_fonts/font = ExtResource("2_lnu2h")
+theme_override_font_sizes/font_size = 25
+text = "+0"
+horizontal_alignment = 1
+vertical_alignment = 1
+script = ExtResource("3_u5sy4")
+
+[node name="DestroyTimer" type="Timer" parent="Indicators/Template"]
+
+[node name="LeftPanel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_right = 800.0
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_lbhrr")
+
+[node name="Background" type="TextureRect" parent="LeftPanel"]
+modulate = Color(1, 1, 1, 0.74902)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(1.1, 1.1)
+pivot_offset = Vector2(400, 324)
+texture = ExtResource("2_p57ef")
+expand_mode = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="LeftPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_top = 40
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 40
+script = ExtResource("2_iywne")
+
+[node name="Statistics" type="VBoxContainer" parent="LeftPanel/MarginContainer"]
+layout_mode = 2
+script = ExtResource("3_lbhrr")
+
+[node name="BananasLabel" type="Label" parent="LeftPanel/MarginContainer/Statistics"]
+layout_mode = 2
+theme_override_constants/outline_size = 10
+theme_override_fonts/font = ExtResource("2_lnu2h")
+theme_override_font_sizes/font_size = 40
+text = "0 Bananas"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BananasPerSecond" type="Label" parent="LeftPanel/MarginContainer/Statistics"]
+layout_mode = 2
+theme_override_constants/outline_size = 5
+theme_override_fonts/font = ExtResource("2_lnu2h")
+theme_override_font_sizes/font_size = 25
+text = "0 Per Second"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CenterContainer" type="CenterContainer" parent="LeftPanel/MarginContainer"]
+layout_mode = 2
+
+[node name="Banana" type="TextureButton" parent="LeftPanel/MarginContainer/CenterContainer"]
+custom_minimum_size = Vector2(200, 200)
+layout_mode = 2
+texture_normal = ExtResource("5_iywne")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="LeftPanel"]
+libraries = {
+&"": SubResource("AnimationLibrary_0tnpc")
+}
+autoplay = "spin_background"
+
+[node name="RightPanel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -352.0
+grow_horizontal = 0
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_iywne")
+
+[node name="Label" type="Label" parent="RightPanel"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -114.0
+offset_top = 20.0
+offset_right = 114.0
+offset_bottom = 79.0
+grow_horizontal = 2
+theme_override_constants/outline_size = 10
+theme_override_fonts/font = ExtResource("2_lnu2h")
+theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = SubResource("StyleBoxFlat_p57ef")
+text = "upgrades"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Panel" type="Panel" parent="RightPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 93.0
+offset_bottom = -11.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_u5sy4")
+
+[node name="UpgradeList" type="BoxContainer" parent="RightPanel/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("8_gee14")
+
+[node name="TemplateUpgrade" type="Button" parent="RightPanel/Panel/UpgradeList"]
+visible = false
+layout_direction = 2
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_fonts/font = ExtResource("2_lnu2h")
+theme_override_font_sizes/font_size = 15
+text = "upgrade a"
+
+[connection signal="banana_clicked" from="." to="LeftPanel/MarginContainer" method="_on_game_banana_clicked"]
+[connection signal="bananas_changed" from="." to="LeftPanel/MarginContainer/Statistics" method="_on_control_bananas_changed"]
+[connection signal="timeout" from="Indicators/Template/DestroyTimer" to="Indicators/Template" method="_on_destroy_timer_timeout"]
+[connection signal="button_down" from="LeftPanel/MarginContainer/CenterContainer/Banana" to="." method="_on_banana_button_down"]
+[connection signal="button_down" from="LeftPanel/MarginContainer/CenterContainer/Banana" to="LeftPanel/MarginContainer" method="_on_banana_button_down"]
+[connection signal="button_up" from="LeftPanel/MarginContainer/CenterContainer/Banana" to="LeftPanel/MarginContainer" method="_on_banana_button_up"]

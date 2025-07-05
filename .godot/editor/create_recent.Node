@@ -1,0 +1,14 @@
+Timer
+VBoxContainer
+HBoxContainer
+Label
+Button
+Panel
+BoxContainer
+Control
+AnimationPlayer
+TextureRect
+MarginContainer
+TextureButton
+CenterContainer
+Window

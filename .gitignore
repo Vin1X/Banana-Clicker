@@ -1,0 +1,29 @@
+# Godot-specific ignores
+.gdignore
+.import/
+# If you're exporting, you might want to ignore these
+export/
+build/
+*.exe
+*.pck
+*.zip
+*.tar.*
+
+# User-specific project settings
+project.godot.editor_settings
+
+# C# specific (if you're using C# in Godot)
+.mono/
+.vs/
+bin/
+obj/
+# rider specific (if you're using Rider IDE)
+.idea/
+
+# OS-specific temporary files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Optional: If you don't want to track editor layouts
+.godot/layout/
