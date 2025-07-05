@@ -1,5 +1,8 @@
 res://scenes/game.tscn
-res://scripts/game.gd
 res://scripts/upgrades.gd
+res://scripts/animations.gd
+res://scripts/destroy_1s.gd
+res://scripts/game.gd
+res://scripts/upgrades_manager.gd
 res://scripts/globals.gd
 res://scripts/persistence.gd

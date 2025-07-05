@@ -1,4 +1,3 @@
-# File: Globals.gd (Set as Autoload in Project Settings -> Autoload tab, Node Name: Globals)
 extends Node
 
 signal bananas_changed(new_amount: float)
@@ -9,10 +8,9 @@ var _bananas: float = 0.0
 var _amount_per_click: float = 1.0
 var _bananas_per_second: float = 0.0
 
-# Use properties for controlled access and signal emission
 var bananas: float:
 	set(value):
-		if _bananas != value: # Only emit if value actually changes
+		if _bananas != value:
 			_bananas = value
 			emit_signal("bananas_changed", _bananas)
 	get:
@@ -37,14 +35,54 @@ var bananas_per_second: float:
 
 var upgrades = [
 	{
-		"id": "click_power_up",
+		"id": "click_2x",
 		"name": "Gathering Training",
-		"description": "Each click gives +1 more banana",
+		"description": "Double your bananas per click",
 		"cost": 10,
 		"applies_to": "click",
-		"effect_type": "additive", # This should match "additive" for click upgrades
-		"effect_value": 1.0,
-		"purchased": false, # For one-time purchases
+		"effect_type": "multiply",
+		"effect_value": 2.0,
+		"purchased": false,
+	},
+	{
+		"id": "click_2x_2",
+		"name": "Gathering Training 2",
+		"description": "Quadruple your bananas per click",
+		"cost": 1000,
+		"applies_to": "click",
+		"effect_type": "multiply",
+		"effect_value": 4.0,
+		"purchased": false,
+	},
+	{
+		"id": "click_2x_3",
+		"name": "Gathering Training 3",
+		"description": "Sextuple your bananas per click",
+		"cost": 50000,
+		"applies_to": "click",
+		"effect_type": "multiply",
+		"effect_value": 6.0,
+		"purchased": false,
+	},
+	{
+		"id": "click_2x_4",
+		"name": "Gathering Training 4",
+		"description": "Octuple your bananas per click",
+		"cost": 250000,
+		"applies_to": "click",
+		"effect_type": "multiply",
+		"effect_value": 8.0,
+		"purchased": false,
+	},
+	{
+		"id": "click_2x_5",
+		"name": "Gathering Training 5",
+		"description": "Decuple your bananas per click",
+		"cost": 1000000,
+		"applies_to": "click",
+		"effect_type": "multiply",
+		"effect_value": 10.0,
+		"purchased": false,
 	},
 	{
 		"id": "monkey",
@@ -52,9 +90,9 @@ var upgrades = [
 		"description": "Each Monkey produces 0.2 bananas",
 		"cost": 50,
 		"applies_to": "passive",
-		"effect_type": "additive",
-		"effect_value": 0.2, # Use float literal for consistency
-		"purchased_amount": 0 # For multiple purchases
+		"effect_type": "add",
+		"effect_value": 0.2,
+		"purchased_amount": 0
 	},
 	{
 		"id": "plantage",
@@ -62,8 +100,8 @@ var upgrades = [
 		"description": "Each plantage produces 0.3 bananas",
 		"cost": 150,
 		"applies_to": "passive",
-		"effect_type": "additive",
-		"effect_value": 0.3, # Use float literal for consistency
+		"effect_type": "add",
+		"effect_value": 0.3,
 		"purchased_amount": 0
 	}
 ]

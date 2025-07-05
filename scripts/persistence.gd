@@ -3,7 +3,6 @@ extends Node
 const save_path = "user://userdata.save"
 
 
-
 func save_data():
 	var data = {
 		"bananas": Globals.bananas,
